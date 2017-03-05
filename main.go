@@ -1,24 +1,37 @@
 package main
 
 import (
-	"database/sql"
-	"fmt"
-	"photo-aggregator/src/domain"
+	"net/http"
+	"photo-aggregator/src/infrastructure"
+	"photo-aggregator/src/interfaces"
+	"photo-aggregator/src/usecases"
 
 	_ "github.com/lib/pq"
 )
 
 func main() {
-	ph := new(domain.Photographer)
+	dbHandler := infrastructure.NewPgHandler("postgres://postgres:vqislemaro1@localhost/photo?sslmode=disable")
+	handlers := make(map[string]interfaces.DbHandler)
+	handlers["DbUserRepo"] = dbHandler
+	handlers["DbTagRepo"] = dbHandler
+	handlers["DbPhotographerRepo"] = dbHandler
+	handlers["DbAttachmentRepo"] = dbHandler
 
-	fmt.Println(ph.ID)
+	photoInteractor := new(usecases.PhotoInteractor)
+	photoInteractor.UserRepository = interfaces.NewDbUserRepo(handlers)
 
-	db, err := sql.Open("postgres", "postgres://postgres:vqislemaro1@localhost/photo?sslmode=disable")
+	webServiceHandler := interfaces.WebServiceHandler{}
+	webServiceHandler.PhotoInteractor = photoInteractor
+
+	http.HandleFunc("/photographers", func(res http.ResponseWriter, req *http.Request) {
+		webServiceHandler.ShowAllPhotographers(res, req)
+	})
+	http.ListenAndServe(":8080", nil)
+	/*db, err := sql.Open("postgres", "postgres://postgres:vqislemaro1@localhost/photo?sslmode=disable")
 	if err != nil {
 		fmt.Println(err)
-	}
-
-	rows, err := db.Query("SELECT * FROM users")
+	}*/
+	/*rows, err := db.Query("SELECT * FROM users")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -31,6 +44,6 @@ func main() {
 			fmt.Println(errr)
 		}
 		fmt.Println(id, " ", email)
-	}
+	}*/
 
 }

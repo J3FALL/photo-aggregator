@@ -19,7 +19,7 @@ func main() {
 
 	photoInteractor := new(usecases.PhotoInteractor)
 	photoInteractor.UserRepository = interfaces.NewDbUserRepo(handlers)
-
+	photoInteractor.PhotographerRepository = interfaces.NewDbPhotographerRepo(handlers)
 	webServiceHandler := interfaces.WebServiceHandler{}
 	webServiceHandler.PhotoInteractor = photoInteractor
 
@@ -27,23 +27,4 @@ func main() {
 		webServiceHandler.ShowAllPhotographers(res, req)
 	})
 	http.ListenAndServe(":8080", nil)
-	/*db, err := sql.Open("postgres", "postgres://postgres:vqislemaro1@localhost/photo?sslmode=disable")
-	if err != nil {
-		fmt.Println(err)
-	}*/
-	/*rows, err := db.Query("SELECT * FROM users")
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	for rows.Next() {
-		var id int
-		var email string
-		errr := rows.Scan(&id, &email)
-		if errr != nil {
-			fmt.Println(errr)
-		}
-		fmt.Println(id, " ", email)
-	}*/
-
 }

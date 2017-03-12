@@ -1,6 +1,7 @@
 package interfaces
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -19,10 +20,16 @@ func (handler WebServiceHandler) ShowAllPhotographers(res http.ResponseWriter, r
 	if err != nil {
 		fmt.Println(err)
 	}
-	for _, photographer := range photographers {
-		io.WriteString(res, fmt.Sprintf("id: %d\n", photographer.ID))
+
+	body, err := json.Marshal(photographers)
+	if err != nil {
+		fmt.Println(err)
+	}
+	io.WriteString(res, string(body))
+	/*for _, photographer := range photographers {
+		/*io.WriteString(res, fmt.Sprintf("id: %d\n", photographer.ID))
 		io.WriteString(res, fmt.Sprintf("name: %s\n", photographer.Name))
 		io.WriteString(res, fmt.Sprintf("surname: %s\n", photographer.Surname))
 		io.WriteString(res, fmt.Sprintf("phone: %s\n", photographer.Phone))
-	}
+	}*/
 }

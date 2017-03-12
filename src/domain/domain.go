@@ -1,10 +1,10 @@
 package domain
 
 type Photographer struct {
-	ID      int
-	Name    string
-	Surname string
-	Phone   string
+	ID      int    `json:"id"`
+	Name    string `json:"name"`
+	Surname string `json:"surname"`
+	Phone   string `json:"phone"`
 }
 
 type Tag struct {
@@ -19,7 +19,8 @@ type Attachment struct {
 
 type PhotographerRepository interface {
 	Store(photographer Photographer)
-	FindById(id int)
+	FindById(id int) Photographer
+	FindAll() []Photographer
 }
 
 type TagRepository interface {

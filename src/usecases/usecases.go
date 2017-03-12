@@ -29,9 +29,15 @@ type PhotoInteractor struct {
 }
 
 func (interactor *PhotoInteractor) Photographers() ([]Photographer, error) {
-	var photographers []Photographer
+	/*var photographers []Photographer
 	photographers = make([]Photographer, 1)
-	photographers[0] = Photographer{1, "ivan", "petrov", "+79992134567"}
+	photographers[0] = Photographer{1, "ivan", "petrov", "+79992134567"}*/
+	photographersTmp := interactor.PhotographerRepository.FindAll()
 
+	photographers := []Photographer{}
+	for _, photographer := range photographersTmp {
+		ph := Photographer{ID: photographer.ID, Name: photographer.Name, Surname: photographer.Surname, Phone: photographer.Phone}
+		photographers = append(photographers, ph)
+	}
 	return photographers, nil
 }

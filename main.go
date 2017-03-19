@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"photo-aggregator/src/infrastructure"
 	"photo-aggregator/src/interfaces"
@@ -28,10 +27,14 @@ func main() {
 
 	router := mux.NewRouter()
 	router.HandleFunc("/photographers", func(res http.ResponseWriter, req *http.Request) {
+		res.Header().Set("Content-Type", "application/json")
 		webServiceHandler.ShowAllPhotographers(res, req)
 	})
 	router.HandleFunc("/photographer/{id}", func(res http.ResponseWriter, req *http.Request) {
-		fmt.Println("/photographer/{id}")
+		if req.Method == "GET" {
+			res.Header().Set("Content-Type", "application/json")
+			webServiceHandler.GetPhotographerById(res, req)
+		}
 	})
 
 	http.Handle("/", router)

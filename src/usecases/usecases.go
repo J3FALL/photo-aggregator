@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"fmt"
 	"photo-aggregator/src/domain"
 )
 
@@ -40,4 +41,11 @@ func (interactor *PhotoInteractor) Photographers() ([]Photographer, error) {
 		photographers = append(photographers, ph)
 	}
 	return photographers, nil
+}
+
+func (interactor *PhotoInteractor) Photographer(id int) (Photographer, error) {
+	photographerTmp := interactor.PhotographerRepository.FindById(id)
+	fmt.Println(id)
+	photographer := Photographer{ID: photographerTmp.ID, Name: photographerTmp.Name, Surname: photographerTmp.Surname, Phone: photographerTmp.Phone}
+	return photographer, nil
 }

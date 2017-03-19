@@ -62,6 +62,7 @@ func (repo *DbPhotographerRepo) Store(photographer domain.Photographer) {
 		photographer.ID, photographer.Name, photographer.Surname, photographer.Phone))
 }
 
+//to-do: 0 rows, what to return?
 func (repo *DbPhotographerRepo) FindById(id int) domain.Photographer {
 	row := repo.dbHandler.Query(fmt.Sprintf(`SELECT name, surname, phone
                                            FROM photographers WHERE id = '%d' LIMIT 1`, id))
@@ -72,8 +73,13 @@ func (repo *DbPhotographerRepo) FindById(id int) domain.Photographer {
 	)
 	row.Next()
 	row.Scan(&name, &surname, &phone)
-	photographer := domain.Photographer{ID: id, Name: name, Surname: surname, Phone: phone}
-	return photographer
+
+	//return id = -1 if 0 rows
+	if name == "" {
+		return domain.Photographer{ID: -1, Name: name, Surname: surname, Phone: phone}
+	} else {
+		return domain.Photographer{ID: id, Name: name, Surname: surname, Phone: phone}
+	}
 }
 
 func (repo *DbPhotographerRepo) FindAll() []domain.Photographer {

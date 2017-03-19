@@ -1,10 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"photo-aggregator/src/infrastructure"
 	"photo-aggregator/src/interfaces"
 	"photo-aggregator/src/usecases"
+
+	"github.com/gorilla/mux"
 
 	_ "github.com/lib/pq"
 )
@@ -23,8 +26,14 @@ func main() {
 	webServiceHandler := interfaces.WebServiceHandler{}
 	webServiceHandler.PhotoInteractor = photoInteractor
 
-	http.HandleFunc("/photographers", func(res http.ResponseWriter, req *http.Request) {
+	router := mux.NewRouter()
+	router.HandleFunc("/photographers", func(res http.ResponseWriter, req *http.Request) {
 		webServiceHandler.ShowAllPhotographers(res, req)
 	})
-	http.ListenAndServe(":8080", nil)
+	router.HandleFunc("/photographer/{id}", func(res http.ResponseWriter, req *http.Request) {
+		fmt.Println("/photographer/{id}")
+	})
+
+	http.Handle("/", router)
+	http.ListenAndServe(":8080", router)
 }

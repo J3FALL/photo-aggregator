@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"os"
 	"photo-aggregator/src/infrastructure"
 	"photo-aggregator/src/interfaces"
 	"photo-aggregator/src/usecases"
@@ -12,7 +13,7 @@ import (
 )
 
 func main() {
-	dbHandler := infrastructure.NewPgHandler("postgres://postgres:vqislemaro1@localhost/photo?sslmode=disable")
+	dbHandler := infrastructure.NewPgHandler(os.Getenv("DATABASE_URL"))
 	handlers := make(map[string]interfaces.DbHandler)
 	handlers["DbUserRepo"] = dbHandler
 	handlers["DbTagRepo"] = dbHandler

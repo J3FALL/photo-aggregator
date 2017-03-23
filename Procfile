@@ -1,1 +1,1 @@
-web:photo-aggregator/main
+web:photo-aggregator

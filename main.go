@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 
@@ -37,5 +38,5 @@ func main() {
 	})
 
 	http.Handle("/", router)
-	http.ListenAndServe(":8080", router)
+	http.ListenAndServe(":"+os.Getenv("PORT"), router)
 }

@@ -25,13 +25,13 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/photographers", func(res http.ResponseWriter, req *http.Request) {
 		res.Header().Set("Content-Type", "application/json")
-		res.Write("test")
+		res.Write([]byte("test"))
 		// webServiceHandler.ShowAllPhotographers(res, req)
 	})
 	router.HandleFunc("/photographer/{id}", func(res http.ResponseWriter, req *http.Request) {
 		if req.Method == "GET" {
 			res.Header().Set("Content-Type", "application/json")
-			res.Write("test")
+			res.Write([]byte("test"))
 			// webServiceHandler.GetPhotographerById(res, req)
 		}
 	})

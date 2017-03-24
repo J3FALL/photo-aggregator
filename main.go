@@ -37,6 +37,12 @@ func main() {
 			webServiceHandler.GetPhotographerById(res, req)
 		}
 	})
+	router.HandleFunc("/photographer", func(res http.ResponseWriter, req *http.Request) {
+		if req.Method == "POST" {
+			res.Header().Set("Content-Type", "application/json")
+			webServiceHandler.CreateNewPhotographer(res, req)
+		}
+	})
 
 	http.Handle("/", router)
 	http.ListenAndServe(":"+os.Getenv("PORT"), router)

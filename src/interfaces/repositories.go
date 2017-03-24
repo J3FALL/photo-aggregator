@@ -57,9 +57,12 @@ func (repo *DbUserRepo) FindById(id int) usecases.User {
 }
 
 func (repo *DbPhotographerRepo) Store(photographer domain.Photographer) {
+	fmt.Println("from repositories")
 	repo.dbHandler.Execute(fmt.Sprintf(`INSERT INTO photographers (id, name, surname, phone)
                                       VALUES ('%d', '%s', '%s', '%s')`,
 		photographer.ID, photographer.Name, photographer.Surname, photographer.Phone))
+
+	fmt.Println("repositories : good")
 }
 
 //to-do: 0 rows, what to return?

@@ -85,6 +85,15 @@ func (repo *DbPhotographerRepo) FindById(id int) domain.Photographer {
 	}
 }
 
+func (repo *DbPhotographerRepo) Update(photographer domain.Photographer) bool {
+	repo.dbHandler.Execute(fmt.Sprintf(`UPDATE photographers SET name = '%s', surname = '%s', phone = '%s'
+																			WHERE id = '%d'`,
+		photographer.Name, photographer.Surname, photographer.Phone, photographer.ID))
+
+	fmt.Println("repos")
+	return true
+}
+
 func (repo *DbPhotographerRepo) FindAll() []domain.Photographer {
 	row := repo.dbHandler.Query(fmt.Sprintf(`SELECT id, name, surname, phone
                                            FROM photographers`))

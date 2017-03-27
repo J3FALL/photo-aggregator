@@ -35,6 +35,9 @@ func main() {
 		if req.Method == "GET" {
 			res.Header().Set("Content-Type", "application/json")
 			webServiceHandler.GetPhotographerById(res, req)
+		} else if req.Method == "PUT" {
+			res.Header().Set("Content-Type", "application/json")
+			webServiceHandler.UpdatePhotographer(res, req)
 		}
 	})
 	router.HandleFunc("/photographer", func(res http.ResponseWriter, req *http.Request) {

@@ -20,6 +20,7 @@ type Attachment struct {
 type PhotographerRepository interface {
 	Store(photographer Photographer)
 	FindById(id int) Photographer
+	Update(photographer Photographer) bool
 	FindAll() []Photographer
 }
 

@@ -15,6 +15,7 @@ type PhotoInteractor interface {
 	Photographers() ([]usecases.Photographer, error)
 	Photographer(id int) (usecases.Photographer, error)
 	NewPhotographer(photographer usecases.Photographer)
+	UpdatePhotographer(photographer usecases.Photographer) bool
 }
 type WebServiceHandler struct {
 	PhotoInteractor PhotoInteractor
@@ -87,4 +88,17 @@ func (handler WebServiceHandler) CreateNewPhotographer(res http.ResponseWriter, 
 		handler.PhotoInteractor.NewPhotographer(photographer)
 	}
 
+}
+
+func (handler WebServiceHandler) UpdatePhotographer(res http.ResponseWriter, req *http.Request) {
+	var photographer usecases.Photographer
+	_ = json.NewDecoder(req.Body).Decode(&photographer)
+	photographerTmp, err := handler.PhotoInteractor.Photographer(photographer.ID)
+	if err != nil {
+		fmt.Println(err)
+	}
+	if photographerTmp.ID != -1 {
+		fmt.Println("before repositories")
+		handler.PhotoInteractor.UpdatePhotographer(photographer)
+	}
 }

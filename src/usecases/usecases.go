@@ -56,3 +56,8 @@ func (interactor *PhotoInteractor) NewPhotographer(photographer Photographer) {
 	interactor.PhotographerRepository.Store(photographerToStore)
 	fmt.Println("usecases : good")
 }
+
+func (interactor *PhotoInteractor) UpdatePhotographer(photographer Photographer) bool {
+	photographerToUpdate := domain.Photographer{ID: photographer.ID, Name: photographer.Name, Surname: photographer.Surname, Phone: photographer.Phone}
+	return interactor.PhotographerRepository.Update(photographerToUpdate)
+}

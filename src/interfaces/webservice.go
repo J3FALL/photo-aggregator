@@ -98,7 +98,6 @@ func (handler WebServiceHandler) UpdatePhotographer(res http.ResponseWriter, req
 		fmt.Println(err)
 	}
 	if photographerTmp.ID != -1 {
-		fmt.Println("before repositories")
 		handler.PhotoInteractor.UpdatePhotographer(photographer)
 	}
 }

@@ -49,3 +49,10 @@ func (interactor *PhotoInteractor) Photographer(id int) (Photographer, error) {
 	photographer := Photographer{ID: photographerTmp.ID, Name: photographerTmp.Name, Surname: photographerTmp.Surname, Phone: photographerTmp.Phone}
 	return photographer, nil
 }
+
+func (interactor *PhotoInteractor) NewPhotographer(photographer Photographer) {
+	fmt.Println("from usecases")
+	photographerToStore := domain.Photographer{ID: photographer.ID, Name: photographer.Name, Surname: photographer.Surname, Phone: photographer.Phone}
+	interactor.PhotographerRepository.Store(photographerToStore)
+	fmt.Println("usecases : good")
+}

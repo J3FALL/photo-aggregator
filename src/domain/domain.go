@@ -27,7 +27,9 @@ type PhotographerRepository interface {
 
 type TagRepository interface {
 	Store(tag Tag)
-	FindById(id int)
+	FindById(id int) Tag
+	Update(tag Tag) bool
+	FindAll() []Tag
 }
 
 type AttachmentRepository interface {

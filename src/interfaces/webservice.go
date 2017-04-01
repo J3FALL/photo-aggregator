@@ -16,6 +16,11 @@ type PhotoInteractor interface {
 	Photographer(id int) (usecases.Photographer, error)
 	NewPhotographer(photographer usecases.Photographer)
 	UpdatePhotographer(photographer usecases.Photographer) bool
+
+	NewTag(tag usecases.Tag)
+	Tag(id int) (usecases.Tag, error)
+	UpdateTag(tag usecases.Tag) bool
+	Tags() ([]usecases.Tag, error)
 }
 type WebServiceHandler struct {
 	PhotoInteractor PhotoInteractor
@@ -100,4 +105,73 @@ func (handler WebServiceHandler) UpdatePhotographer(res http.ResponseWriter, req
 	if photographerTmp.ID != -1 {
 		handler.PhotoInteractor.UpdatePhotographer(photographer)
 	}
+}
+
+func (handler WebServiceHandler) CreateNewTag(res http.ResponseWriter, req *http.Request) {
+	var tag usecases.Tag
+	_ = json.NewDecoder(req.Body).Decode(&tag)
+
+	fmt.Println("from webservice")
+	tagTmp, err := handler.PhotoInteractor.Tag(tag.ID)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if tagTmp.ID == -1 {
+		handler.PhotoInteractor.NewTag(tag)
+	}
+}
+
+func (handler WebServiceHandler) GetTagById(res http.ResponseWriter, req *http.Request) {
+	vars := mux.Vars(req)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		fmt.Println(err)
+	}
+	tag, err := handler.PhotoInteractor.Tag(id)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	//dirty code of 0 rows issue
+	if tag.ID == -1 {
+		body, err := json.Marshal(nil)
+		if err != nil {
+			fmt.Println(err)
+		}
+		io.WriteString(res, string(body))
+	} else {
+		body, err := json.Marshal(tag)
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		io.WriteString(res, string(body))
+	}
+}
+
+func (handler WebServiceHandler) UpdateTag(res http.ResponseWriter, req *http.Request) {
+	var tag usecases.Tag
+	_ = json.NewDecoder(req.Body).Decode(&tag)
+	tagTmp, err := handler.PhotoInteractor.Tag(tag.ID)
+	if err != nil {
+		fmt.Println(err)
+	}
+	if tagTmp.ID != -1 {
+		handler.PhotoInteractor.UpdateTag(tag)
+	}
+}
+
+func (handler WebServiceHandler) ShowAllTags(res http.ResponseWriter, req *http.Request) {
+	tags, err := handler.PhotoInteractor.Tags()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	body, err := json.Marshal(tags)
+	if err != nil {
+		fmt.Println(err)
+	}
+	io.WriteString(res, string(body))
 }

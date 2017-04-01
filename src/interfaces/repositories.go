@@ -40,6 +40,13 @@ func NewDbPhotographerRepo(dbHandlers map[string]DbHandler) *DbPhotographerRepo 
 	return dbPhotographerRepo
 }
 
+func NewDbTagRepo(dbHandlers map[string]DbHandler) *DbTagRepo {
+	dbTagRepo := new(DbTagRepo)
+	dbTagRepo.dbHandlers = dbHandlers
+	dbTagRepo.dbHandler = dbHandlers["DbTagRepo"]
+	return dbTagRepo
+}
+
 func (repo *DbUserRepo) Store(user usecases.User) {
 	repo.dbHandler.Execute(fmt.Sprintf(`INSERT INTO users (id, email)
                                       VALUES ('%d', '%s')`,
@@ -113,4 +120,54 @@ func (repo *DbPhotographerRepo) FindAll() []domain.Photographer {
 	}
 	fmt.Println(photographers)
 	return photographers
+}
+
+func (repo *DbTagRepo) Store(tag domain.Tag) {
+	repo.dbHandler.Execute(fmt.Sprintf(`INSERT INTO tags (id, name)
+                                      VALUES ('%d', '%s')`,
+		tag.ID, tag.Name))
+}
+
+func (repo *DbTagRepo) FindById(id int) domain.Tag {
+	fmt.Println("findById")
+	row := repo.dbHandler.Query(fmt.Sprintf(`SELECT name
+                                           FROM tags WHERE id = '%d' LIMIT 1`, id))
+	var name string
+
+	fmt.Println("1")
+	row.Next()
+	fmt.Println("2")
+	row.Scan(&name)
+
+	fmt.Println("from repos ", name)
+	//return id = -1 if 0 rows
+	if name == "" {
+		return domain.Tag{ID: -1, Name: name}
+	} else {
+		return domain.Tag{ID: id, Name: name}
+	}
+}
+
+func (repo *DbTagRepo) Update(tag domain.Tag) bool {
+	repo.dbHandler.Execute(fmt.Sprintf(`UPDATE tags SET name = '%s'
+																			WHERE id = '%d'`,
+		tag.Name, tag.ID))
+	return true
+}
+
+func (repo *DbTagRepo) FindAll() []domain.Tag {
+	row := repo.dbHandler.Query(fmt.Sprintf(`SELECT id, name
+                                           FROM tags`))
+	var (
+		id   int
+		name string
+	)
+
+	tags := []domain.Tag{}
+	for row.Next() {
+		row.Scan(&id, &name)
+		tag := domain.Tag{ID: id, Name: name}
+		tags = append(tags, tag)
+	}
+	return tags
 }

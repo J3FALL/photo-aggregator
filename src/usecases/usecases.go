@@ -18,6 +18,10 @@ type Photographer struct {
 	InstagramURL string
 }
 
+type Tag struct {
+	ID   int
+	Name string
+}
 type UserRepository interface {
 	Store(user User)
 	FindById(id int) User
@@ -62,4 +66,33 @@ func (interactor *PhotoInteractor) UpdatePhotographer(photographer Photographer)
 	photographerToUpdate := domain.Photographer{ID: photographer.ID, Name: photographer.Name, Surname: photographer.Surname, VkURL: photographer.VkURL, InstagramURL: photographer.InstagramURL}
 	interactor.PhotographerRepository.Update(photographerToUpdate)
 	return true
+}
+
+func (interactor *PhotoInteractor) NewTag(tag Tag) {
+	tagToStore := domain.Tag{ID: tag.ID, Name: tag.Name}
+	fmt.Println(tagToStore)
+	interactor.TagRepository.Store(tagToStore)
+}
+
+func (interactor *PhotoInteractor) Tag(id int) (Tag, error) {
+	fmt.Println("from usecases")
+	tagTmp := interactor.TagRepository.FindById(id)
+	tag := Tag{ID: tagTmp.ID, Name: tagTmp.Name}
+	return tag, nil
+}
+
+func (interactor *PhotoInteractor) UpdateTag(tag Tag) bool {
+	tagToUpdate := domain.Tag{ID: tag.ID, Name: tag.Name}
+	interactor.TagRepository.Update(tagToUpdate)
+	return true
+}
+
+func (interactor *PhotoInteractor) Tags() ([]Tag, error) {
+	tagsTmp := interactor.TagRepository.FindAll()
+	tags := []Tag{}
+	for _, tag := range tagsTmp {
+		tg := Tag{ID: tag.ID, Name: tag.Name}
+		tags = append(tags, tg)
+	}
+	return tags, nil
 }

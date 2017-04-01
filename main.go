@@ -27,11 +27,11 @@ func main() {
 	webServiceHandler.PhotoInteractor = photoInteractor
 
 	router := mux.NewRouter()
-	router.HandleFunc("/photographers", func(res http.ResponseWriter, req *http.Request) {
+	router.HandleFunc("/api/photographers", func(res http.ResponseWriter, req *http.Request) {
 		res.Header().Set("Content-Type", "application/json")
 		webServiceHandler.ShowAllPhotographers(res, req)
 	})
-	router.HandleFunc("/photographer/{id}", func(res http.ResponseWriter, req *http.Request) {
+	router.HandleFunc("/api/photographer/{id}", func(res http.ResponseWriter, req *http.Request) {
 		if req.Method == "GET" {
 			res.Header().Set("Content-Type", "application/json")
 			webServiceHandler.GetPhotographerById(res, req)
@@ -40,13 +40,13 @@ func main() {
 			webServiceHandler.UpdatePhotographer(res, req)
 		}
 	})
-	router.HandleFunc("/photographer", func(res http.ResponseWriter, req *http.Request) {
+	router.HandleFunc("/api/photographer", func(res http.ResponseWriter, req *http.Request) {
 		if req.Method == "POST" {
 			res.Header().Set("Content-Type", "application/json")
 			webServiceHandler.CreateNewPhotographer(res, req)
 		}
 	})
 
-	http.Handle("/", router)
+	http.Handle("/api", router)
 	http.ListenAndServe(":"+os.Getenv("PORT"), router)
 }

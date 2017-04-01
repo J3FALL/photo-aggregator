@@ -3,7 +3,8 @@ CREATE TABLE photographers (
   id integer PRIMARY KEY,
   name varchar(40) NOT NULL,
   surname varchar(40) NOT NULL,
-  phone varchar(40) NOT NULL
+  vk_url varchar(40),
+  instagram_url varchar(40)
 );
 CREATE TABLE users (
   id integer PRIMARY KEY,

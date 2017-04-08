@@ -3,6 +3,7 @@ package interfaces
 import (
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"io"
 	"net/http"
 	"photo-aggregator/src/usecases"
@@ -174,4 +175,15 @@ func (handler WebServiceHandler) ShowAllTags(res http.ResponseWriter, req *http.
 		fmt.Println(err)
 	}
 	io.WriteString(res, string(body))
+}
+
+//Front-end methods
+
+func (handler WebServiceHandler) ShowTemplates(res http.ResponseWriter, req *http.Request) {
+	t, err := template.New("").Delims("{{%", "%}}").ParseFiles("assets/templates/index.html", "assets/templates/header.html", "assets/templates/footer.html")
+	if err != nil {
+		fmt.Fprintf(res, err.Error())
+		return
+	}
+	t.ExecuteTemplate(res, "index", nil)
 }

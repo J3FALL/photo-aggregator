@@ -1,0 +1,74 @@
+{{% define "index" %}}
+
+{{% template "header" %}}
+
+<div class = "container">
+  <div class="row justify-content-center">
+
+    <div class = "col s12">
+
+
+      <h2>Фотографы в Санкт-Петербурге</h2>
+      <div ng-app="myApp" ng-controller="MyCtrl">
+                    {{example1.Name}}
+        <div class="chip btn-flat {{scope.color}}" ><a href="" ng-click="scope.color='red'; AddTag('tag1')"><span clas="hyperspan">Tag</span></a></div>
+        <div class="chip btn-flat"><a href="" ng-click="AddTag()">Tag</a></div>
+        <div class="chip btn-flat"><a href="" ng-click="AddTag()">Tag</a></div>
+        <div class="chip btn-flat"><a href="" ng-click="AddTag()">Tag</a></div>
+        <div class="chip btn-flat"><a href="" ng-click="AddTag()">Tag</a></div>
+        <p>Model: {{tags}}</p>
+
+        <div class="card-panel hoverable" ng-repeat= "name in photograthers | selectedTags:tags">
+          <div class = "row">
+            <div class = "col s4">
+              <h4>{{name.name}}</h4>
+              <h6>{{name.snippet}}<H6>
+            </div>
+            <div class = "col s8">
+              <div class="chip" ng-repeat= "tag in name.Tags">{{tag}}</div>
+            </div>
+          </div>
+          <div ng-app="myApp" ng-controller="MyCtrl">
+
+
+          <div class="gallery-container">
+            <a class="arrow-container arrow-container-left" ng-click="left()">
+              <div class="arrow"><i class="fa fa-angle-left fa-4x"></i></div>
+            </a>
+            <a class="arrow-container arrow-container-right" ng-click="right()">
+            <div class="arrow"><i class="fa fa-angle-right fa-4x"></i></div>
+            </a>
+            <div class="gallery-content">
+              <div class="tile" ng-repeat="tile in tiles" id="tile-{{tile}}">{{tile}}</div>
+            </div>
+          </div>
+        </div>
+
+        </div>
+
+
+
+
+
+      </div>
+</div>
+    </div>
+    <ul class="pagination">
+
+    <li class="active"><a href="#!">1</a></li>
+    <li class="waves-effect"><a href="#!">2</a></li>
+    <li class="waves-effect"><a href="#!">3</a></li>
+    <li class="waves-effect"><a href="#!">4</a></li>
+    <li class="waves-effect"><a href="#!">5</a></li>
+
+  </ul>
+  </div>
+
+
+</div>
+
+
+
+{{% template "footer" %}}
+
+{{% end %}}

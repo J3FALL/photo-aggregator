@@ -72,5 +72,15 @@ func main() {
 	})
 
 	http.Handle("/api", router)
+
+	//Front-end router setup
+	router.PathPrefix("/assets/css/").Handler(http.StripPrefix("/assets/css/", http.FileServer(http.Dir("./assets/css"))))
+	router.PathPrefix("/assets/templates/").Handler(http.StripPrefix("/assets/templates/", http.FileServer(http.Dir("./assets/templates"))))
+	router.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
+		res.Header().Set("Content-Type", "text/html")
+		webServiceHandler.ShowTemplates(res, req)
+	})
+	http.Handle("/", router)
+
 	http.ListenAndServe(":"+os.Getenv("PORT"), router)
 }

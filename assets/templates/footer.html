@@ -1,0 +1,85 @@
+{{% define "footer" %}}
+<footer class="page-footer">
+     <div class="container">
+       <div class="row">
+         <div class="col l6 s12">
+           <h5 class="white-text">Footer Content</h5>
+           <p class="grey-text text-lighten-4">You can use rows and columns here to organize your footer content.</p>
+         </div>
+         <div class="col l4 offset-l2 s12">
+           <h5 class="white-text">Links</h5>
+           <ul>
+             <li><a class="grey-text text-lighten-3" href="#!">Link 1</a></li>
+             <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
+             <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
+             <li><a class="grey-text text-lighten-3" href="#!">Link 4</a></li>
+           </ul>
+         </div>
+       </div>
+     </div>
+     <div class="footer-copyright">
+       <div class="container">
+       © 2014 Copyright Text
+       <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+       </div>
+     </div>
+   </footer>
+<body>
+  <script src="http://code.angularjs.org/1.2.10/angular-resource.min.js"></script>
+<script>
+var app = new angular.module("myApp", ["ngResource"]);
+app.controller("MyCtrl", ["$scope", "$resource", function($scope, $resource){
+  var Book = $resource("/show", null);
+  $scope.example1 = Book.get();
+  $scope.photograthers = [
+    {
+      name: 'Dima Huev',
+      snippet: 'PROFESSIANAL HUEGLOT',
+      Tags: ['tag1','tag3']
+    }, {
+      name: 'Pisya Kamushkin',
+      snippet: 'SELFIE KING.',
+      Tags: ['tag2']
+    }, {
+      name: 'Mamka Tvoya',
+      snippet: 'HUIHUIHUI',
+      Tags: ['tag1','tag3']
+    }
+  ];
+  $scope.tags = ['tag2'];
+  $scope.AddTag = function (tag) {
+    $scope.tags.push(tag)
+  }
+  $scope.tiles = [1,2,3,4,5,6,7,8,9,10];
+  var currentPlace = 0;
+  var contentContainer = $('.gallery-content');
+  function getViewportSize() {
+    return $(document.body).outerWidth()/2;
+  }
+  $scope.left = function() {
+    contentContainer.animate({
+      scrollLeft: '-=' + getViewportSize()
+    })
+  };
+  $scope.right = function() {
+    contentContainer.animate({
+      scrollLeft: '+=' + getViewportSize()
+    })
+  }
+}]
+);
+app.filter('selectedTags', function() {
+    return function(photograthers, tags) {
+        return photograthers.filter(function(photograther) {
+            for (var i in photograther.Tags) {
+                if (tags.indexOf(photograther.Tags[i]) != -1) {
+                    return true;
+                }
+            }
+            return false;
+        });
+    };
+})
+</script>
+<html>
+{{% end %}}

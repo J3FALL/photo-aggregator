@@ -65,57 +65,61 @@ func (repo *DbUserRepo) FindById(id int) usecases.User {
 
 func (repo *DbPhotographerRepo) Store(photographer domain.Photographer) {
 	fmt.Println("from repositories")
-	repo.dbHandler.Execute(fmt.Sprintf(`INSERT INTO photographers (id, name, surname, vk_url, instagram_url)
-                                      VALUES ('%d', '%s', '%s', '%s', '%s')`,
-		photographer.ID, photographer.Name, photographer.Surname, photographer.VkURL, photographer.InstagramURL))
+	repo.dbHandler.Execute(fmt.Sprintf(`INSERT INTO photographers (id, name, surname, description, sub_description, vk_url, instagram_url)
+                                      VALUES ('%d', '%s', '%s', '%s', '%s', '%s', '%s')`,
+		photographer.ID, photographer.Name, photographer.Surname, photographer.Description, photographer.SubDescription, photographer.VkURL, photographer.InstagramURL))
 
 	fmt.Println("repositories : good")
 }
 
 //to-do: 0 rows, what to return?
 func (repo *DbPhotographerRepo) FindById(id int) domain.Photographer {
-	row := repo.dbHandler.Query(fmt.Sprintf(`SELECT name, surname, vk_url, instagram_url
+	row := repo.dbHandler.Query(fmt.Sprintf(`SELECT name, surname, description, sub_description, vk_url, instagram_url
                                            FROM photographers WHERE id = '%d' LIMIT 1`, id))
 	var (
-		name         string
-		surname      string
-		vkUrl        string
-		instagramUrl string
+		name           string
+		surname        string
+		description    string
+		subDescription string
+		vkUrl          string
+		instagramUrl   string
 	)
 	row.Next()
-	row.Scan(&name, &surname, &vkUrl, &instagramUrl)
+	row.Scan(&name, &surname, &description, &subDescription, &vkUrl, &instagramUrl)
 
 	//return id = -1 if 0 rows
 	if name == "" {
-		return domain.Photographer{ID: -1, Name: name, Surname: surname, VkURL: vkUrl, InstagramURL: instagramUrl}
+		return domain.Photographer{ID: -1, Name: name, Surname: surname, Description: description, SubDescription: subDescription, VkURL: vkUrl, InstagramURL: instagramUrl}
 	} else {
-		return domain.Photographer{ID: id, Name: name, Surname: surname, VkURL: vkUrl, InstagramURL: instagramUrl}
+		return domain.Photographer{ID: id, Name: name, Surname: surname, Description: description, SubDescription: subDescription, VkURL: vkUrl, InstagramURL: instagramUrl}
 	}
 }
 
 func (repo *DbPhotographerRepo) Update(photographer domain.Photographer) bool {
-	repo.dbHandler.Execute(fmt.Sprintf(`UPDATE photographers SET name = '%s', surname = '%s', vk_url = '%s', instagram_url = '%s'
+	repo.dbHandler.Execute(fmt.Sprintf(`UPDATE photographers SET name = '%s', surname = '%s', description = '%s', sub_description = '%s', vk_url = '%s', instagram_url = '%s'
 																			WHERE id = '%d'`,
-		photographer.Name, photographer.Surname, photographer.VkURL, photographer.InstagramURL, photographer.ID))
+		photographer.Name, photographer.Surname, photographer.Description, photographer.SubDescription, photographer.VkURL, photographer.InstagramURL, photographer.ID))
 	return true
 }
 
 func (repo *DbPhotographerRepo) FindAll() []domain.Photographer {
-	row := repo.dbHandler.Query(fmt.Sprintf(`SELECT id, name, surname, vk_url, instagram_url
+	row := repo.dbHandler.Query(fmt.Sprintf(`SELECT id, name, surname, description, sub_description, vk_url, instagram_url
                                            FROM photographers`))
 	var (
-		id           int
-		name         string
-		surname      string
-		vkUrl        string
-		instagramUrl string
+		id             int
+		name           string
+		surname        string
+		description    string
+		subDescription string
+		vkUrl          string
+		instagramUrl   string
 	)
 
 	photographers := []domain.Photographer{}
 	for row.Next() {
-		row.Scan(&id, &name, &surname, &vkUrl, &instagramUrl)
+		row.Scan(&id, &name, &surname, &description, &subDescription, &vkUrl, &instagramUrl)
 		fmt.Println(id)
-		photographer := domain.Photographer{ID: id, Name: name, Surname: surname, VkURL: vkUrl, InstagramURL: instagramUrl}
+		photographer := domain.Photographer{ID: id, Name: name, Surname: surname, Description: description, SubDescription: subDescription, VkURL: vkUrl, InstagramURL: instagramUrl}
 		photographers = append(photographers, photographer)
 	}
 	fmt.Println(photographers)

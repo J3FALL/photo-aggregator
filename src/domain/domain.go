@@ -1,11 +1,13 @@
 package domain
 
 type Photographer struct {
-	ID           int
-	Name         string
-	Surname      string
-	VkURL        string
-	InstagramURL string
+	ID             int
+	Name           string
+	Surname        string
+	Description    string
+	SubDescription string
+	VkURL          string
+	InstagramURL   string
 }
 
 type Tag struct {

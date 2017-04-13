@@ -47,6 +47,13 @@ func NewDbTagRepo(dbHandlers map[string]DbHandler) *DbTagRepo {
 	return dbTagRepo
 }
 
+func NewDbAttachmentRepo(dbHandlers map[string]DbHandler) *DbAttachmentRepo {
+	dbAttachmentRepo := new(DbAttachmentRepo)
+	dbAttachmentRepo.dbHandlers = dbHandlers
+	dbAttachmentRepo.dbHandler = dbHandlers["DbAttachmentRepo"]
+	return dbAttachmentRepo
+}
+
 func (repo *DbUserRepo) Store(user usecases.User) {
 	repo.dbHandler.Execute(fmt.Sprintf(`INSERT INTO users (id, email)
                                       VALUES ('%d', '%s')`,
@@ -174,4 +181,53 @@ func (repo *DbTagRepo) FindAll() []domain.Tag {
 		tags = append(tags, tag)
 	}
 	return tags
+}
+
+func (repo *DbAttachmentRepo) Store(attach domain.Attachment) {
+	repo.dbHandler.Execute(fmt.Sprintf(`INSERT INTO attachments (id, description, url)
+                                      VALUES ('%d', '%s', '%s')`,
+		attach.ID, attach.Description, attach.Url))
+}
+
+func (repo *DbAttachmentRepo) FindById(id int) domain.Attachment {
+	row := repo.dbHandler.Query(fmt.Sprintf(`SELECT description, url
+                                           FROM attachments WHERE id = '%d' LIMIT 1`, id))
+	var (
+		description string
+		url         string
+	)
+	row.Next()
+	row.Scan(&description, &url)
+	fmt.Println("!", description)
+	//return id = -1 if 0 rows
+	if url == "" {
+		return domain.Attachment{ID: -1, Description: description, Url: url}
+	} else {
+		return domain.Attachment{ID: id, Description: description, Url: url}
+	}
+}
+
+func (repo *DbAttachmentRepo) Update(attachment domain.Attachment) bool {
+	repo.dbHandler.Execute(fmt.Sprintf(`UPDATE attachments SET description = '%s', url = '%s'
+																			WHERE id = '%d'`,
+		attachment.Description, attachment.Url, attachment.ID))
+	return true
+}
+
+func (repo *DbAttachmentRepo) FindAll() []domain.Attachment {
+	row := repo.dbHandler.Query(fmt.Sprintf(`SELECT id, description, url
+                                           FROM attachments`))
+	var (
+		id          int
+		description string
+		url         string
+	)
+
+	attachments := []domain.Attachment{}
+	for row.Next() {
+		row.Scan(&id, &description, &url)
+		attach := domain.Attachment{ID: id, Description: description, Url: url}
+		attachments = append(attachments, attach)
+	}
+	return attachments
 }

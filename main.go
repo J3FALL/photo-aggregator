@@ -24,6 +24,7 @@ func main() {
 	photoInteractor.UserRepository = interfaces.NewDbUserRepo(handlers)
 	photoInteractor.PhotographerRepository = interfaces.NewDbPhotographerRepo(handlers)
 	photoInteractor.TagRepository = interfaces.NewDbTagRepo(handlers)
+	photoInteractor.AttachmentRepository = interfaces.NewDbAttachmentRepo(handlers)
 	webServiceHandler := interfaces.WebServiceHandler{}
 	webServiceHandler.PhotoInteractor = photoInteractor
 
@@ -69,6 +70,27 @@ func main() {
 	router.HandleFunc("/api/tags", func(res http.ResponseWriter, req *http.Request) {
 		res.Header().Set("Content-Type", "application/json")
 		webServiceHandler.ShowAllTags(res, req)
+	})
+
+	//Attachments API
+	router.HandleFunc("/api/attach/{id}", func(res http.ResponseWriter, req *http.Request) {
+		if req.Method == "GET" {
+			res.Header().Set("Content-Type", "application/json")
+			webServiceHandler.GetAttachmentById(res, req)
+		} else if req.Method == "PUT" {
+			res.Header().Set("Content-Type", "application/json")
+			webServiceHandler.UpdateAttachment(res, req)
+		}
+	})
+	router.HandleFunc("/api/attach", func(res http.ResponseWriter, req *http.Request) {
+		if req.Method == "POST" {
+			res.Header().Set("Content-Type", "application/json")
+			webServiceHandler.CreateNewAttachment(res, req)
+		}
+	})
+	router.HandleFunc("/api/attachments", func(res http.ResponseWriter, req *http.Request) {
+		res.Header().Set("Content-Type", "application/json")
+		webServiceHandler.ShowAllAttachments(res, req)
 	})
 
 	http.Handle("/api", router)

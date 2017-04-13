@@ -22,6 +22,11 @@ type PhotoInteractor interface {
 	Tag(id int) (usecases.Tag, error)
 	UpdateTag(tag usecases.Tag) bool
 	Tags() ([]usecases.Tag, error)
+
+	NewAttachment(attach usecases.Attachment)
+	Attachment(id int) (usecases.Attachment, error)
+	UpdateAttachment(attach usecases.Attachment) bool
+	Attachments() ([]usecases.Attachment, error)
 }
 type WebServiceHandler struct {
 	PhotoInteractor PhotoInteractor
@@ -171,6 +176,75 @@ func (handler WebServiceHandler) ShowAllTags(res http.ResponseWriter, req *http.
 	}
 
 	body, err := json.Marshal(tags)
+	if err != nil {
+		fmt.Println(err)
+	}
+	io.WriteString(res, string(body))
+}
+
+func (handler WebServiceHandler) CreateNewAttachment(res http.ResponseWriter, req *http.Request) {
+	var attach usecases.Attachment
+	_ = json.NewDecoder(req.Body).Decode(&attach)
+
+	fmt.Println("from webservice")
+	attachTmp, err := handler.PhotoInteractor.Attachment(attach.ID)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if attachTmp.ID == -1 {
+		handler.PhotoInteractor.NewAttachment(attach)
+	}
+}
+
+func (handler WebServiceHandler) GetAttachmentById(res http.ResponseWriter, req *http.Request) {
+	vars := mux.Vars(req)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		fmt.Println(err)
+	}
+	attach, err := handler.PhotoInteractor.Attachment(id)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	//dirty code of 0 rows issue
+	if attach.ID == -1 {
+		body, err := json.Marshal(nil)
+		if err != nil {
+			fmt.Println(err)
+		}
+		io.WriteString(res, string(body))
+	} else {
+		body, err := json.Marshal(attach)
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		io.WriteString(res, string(body))
+	}
+}
+
+func (handler WebServiceHandler) UpdateAttachment(res http.ResponseWriter, req *http.Request) {
+	var attach usecases.Attachment
+	_ = json.NewDecoder(req.Body).Decode(&attach)
+	attachTmp, err := handler.PhotoInteractor.Attachment(attach.ID)
+	if err != nil {
+		fmt.Println(err)
+	}
+	if attachTmp.ID != -1 {
+		handler.PhotoInteractor.UpdateAttachment(attach)
+	}
+}
+
+func (handler WebServiceHandler) ShowAllAttachments(res http.ResponseWriter, req *http.Request) {
+	attachments, err := handler.PhotoInteractor.Attachments()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	body, err := json.Marshal(attachments)
 	if err != nil {
 		fmt.Println(err)
 	}

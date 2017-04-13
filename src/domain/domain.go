@@ -18,6 +18,7 @@ type Tag struct {
 type Attachment struct {
 	ID          int
 	Description string
+	Url         string
 }
 
 type PhotographerRepository interface {
@@ -36,5 +37,7 @@ type TagRepository interface {
 
 type AttachmentRepository interface {
 	Store(attachment Attachment)
-	FindById(id int)
+	FindById(id int) Attachment
+	Update(attachment Attachment) bool
+	FindAll() []Attachment
 }

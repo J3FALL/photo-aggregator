@@ -18,5 +18,6 @@ CREATE TABLE tags (
 );
 CREATE TABLE attachments (
   id integer PRIMARY KEY,
-  description varchar(40)
+  description varchar(40),
+  url varchar(300) NOT NULL
 );

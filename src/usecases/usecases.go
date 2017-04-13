@@ -24,6 +24,13 @@ type Tag struct {
 	ID   int
 	Name string
 }
+
+type Attachment struct {
+	ID          int
+	Description string
+	Url         string
+}
+
 type UserRepository interface {
 	Store(user User)
 	FindById(id int) User
@@ -105,4 +112,31 @@ func (interactor *PhotoInteractor) Tags() ([]Tag, error) {
 		tags = append(tags, tg)
 	}
 	return tags, nil
+}
+
+func (interactor *PhotoInteractor) NewAttachment(attach Attachment) {
+	attachToStore := domain.Attachment{ID: attach.ID, Description: attach.Description, Url: attach.Url}
+	interactor.AttachmentRepository.Store(attachToStore)
+}
+
+func (interactor *PhotoInteractor) Attachment(id int) (Attachment, error) {
+	attachTmp := interactor.AttachmentRepository.FindById(id)
+	attach := Attachment{ID: attachTmp.ID, Description: attachTmp.Description, Url: attachTmp.Url}
+	return attach, nil
+}
+
+func (interactor *PhotoInteractor) UpdateAttachment(attach Attachment) bool {
+	attachToUpdate := domain.Attachment{ID: attach.ID, Description: attach.Description, Url: attach.Url}
+	interactor.AttachmentRepository.Update(attachToUpdate)
+	return true
+}
+
+func (interactor *PhotoInteractor) Attachments() ([]Attachment, error) {
+	attachmentsTmp := interactor.AttachmentRepository.FindAll()
+	attachments := []Attachment{}
+	for _, attach := range attachmentsTmp {
+		att := Attachment{ID: attach.ID, Description: attach.Description, Url: attach.Url}
+		attachments = append(attachments, att)
+	}
+	return attachments, nil
 }

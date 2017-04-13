@@ -73,8 +73,8 @@ func (repo *DbUserRepo) FindById(id int) usecases.User {
 func (repo *DbPhotographerRepo) Store(photographer domain.Photographer) {
 	fmt.Println("from repositories")
 	repo.dbHandler.Execute(fmt.Sprintf(`INSERT INTO photographers (id, name, surname, description, sub_description, vk_url, instagram_url)
-                                      VALUES ('%d', '%s', '%s', '%s', '%s', '%s', '%s')`,
-		photographer.ID, photographer.Name, photographer.Surname, photographer.Description, photographer.SubDescription, photographer.VkURL, photographer.InstagramURL))
+                                      VALUES (nextval('photographers_seq'), '%s', '%s', '%s', '%s', '%s', '%s')`,
+		photographer.Name, photographer.Surname, photographer.Description, photographer.SubDescription, photographer.VkURL, photographer.InstagramURL))
 
 	fmt.Println("repositories : good")
 }
@@ -135,8 +135,8 @@ func (repo *DbPhotographerRepo) FindAll() []domain.Photographer {
 
 func (repo *DbTagRepo) Store(tag domain.Tag) {
 	repo.dbHandler.Execute(fmt.Sprintf(`INSERT INTO tags (id, name)
-                                      VALUES ('%d', '%s')`,
-		tag.ID, tag.Name))
+                                      VALUES (nextval('tags_seq'), '%s')`,
+		tag.Name))
 }
 
 func (repo *DbTagRepo) FindById(id int) domain.Tag {
@@ -185,8 +185,8 @@ func (repo *DbTagRepo) FindAll() []domain.Tag {
 
 func (repo *DbAttachmentRepo) Store(attach domain.Attachment) {
 	repo.dbHandler.Execute(fmt.Sprintf(`INSERT INTO attachments (id, description, url)
-                                      VALUES ('%d', '%s', '%s')`,
-		attach.ID, attach.Description, attach.Url))
+                                      VALUES (nextval('attachments_seq'), '%s', '%s')`,
+		attach.Description, attach.Url))
 }
 
 func (repo *DbAttachmentRepo) FindById(id int) domain.Attachment {

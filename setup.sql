@@ -21,3 +21,13 @@ CREATE TABLE attachments (
   description varchar(40),
   url varchar(300) NOT NULL
 );
+--sequences
+CREATE SEQUENCE photographers_seq
+  start 1
+  increment 1;
+CREATE SEQUENCE tags_seq
+  start 1
+  increment 1;
+CREATE SEQUENCE  attachments_seq
+  start 1
+  increment 1;
